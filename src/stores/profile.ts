@@ -8,9 +8,9 @@ export const useProfileStore = defineStore('profile', {
   state: () => ({
     token: localStorage.getItem('token') || '',
     user: {
-      username: 'johnDoe',
+      username: 'Joshua Yeh',
       quote: 'Hello, World!',
-      photo: 'https://example.com/image.jpg'
+      photo: '/avatar.jpeg'
     }
   }),
   actions: {
