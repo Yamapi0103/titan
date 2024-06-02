@@ -32,7 +32,8 @@ router.beforeEach((to, from, next) => {
       console.log('innn')
       next({ name: 'verify' })
     }
+  } else {
+    next()
   }
-  next()
 })
 export default router
