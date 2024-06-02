@@ -9,7 +9,7 @@
         maxlength="1"
         ref="inputRefs"
         @input="(event) => handleInput(event, index)"
-        @keyup="(event) => handleKeyup(event, index)"
+        @keyup.backspace="handleKeyup(index)"
         @paste.prevent="(event) => handlePaste(event, index)"
       />
       <button class="submit" @click="verifyCode" :disabled="loading">提交</button>
@@ -29,6 +29,7 @@ const error = ref('')
 const loading = ref(false)
 const router = useRouter()
 const profileStore = useProfileStore()
+
 onMounted(() => {
   // bug: no focus on first input
   const firstInput = inputRefs.value[0]
@@ -43,21 +44,24 @@ const handleInput = (event, index) => {
   pads.value[index] = ''
   if (!newValue) return
   pads.value[index] = newValue
+  jumpNext(index)
 }
-const handleKeyup = async (event, index) => {
-  const key = event.key
-  if (key >= '0' && key <= '9') {
-    const nextIndex = index < 3 ? index + 1 : index
-    inputRefs.value[nextIndex].focus()
-    if (index === 3) {
-      await verifyCode()
-      inputRefs.value[0].focus()
-    }
-  } else if (key === 'Backspace' && index > 0) {
-    const lastIndex = index - 1
-    inputRefs.value[lastIndex].focus()
+const handleKeyup = async (index) => {
+  if (index <= 0) return
+  const lastIndex = index - 1
+  pads.value[lastIndex] = ''
+  inputRefs.value[lastIndex].focus()
+}
+
+const jumpNext = async (index) => {
+  const nextIndex = index < 3 ? index + 1 : index
+  inputRefs.value[nextIndex].focus()
+  if (index === 3) {
+    await verifyCode()
+    inputRefs.value[0].focus()
   }
 }
+
 const handlePaste = async (event, index) => {
   let pasteData = event.clipboardData.getData('text')
   if (!pasteData.match(/^\d+$/)) return
@@ -69,7 +73,7 @@ const handlePaste = async (event, index) => {
   ) {
     const curPaste = pasteData[pasteIndex]
     pads.value[i] = curPaste
-    await handleKeyup({ key: String(curPaste) }, i)
+    await jumpNext(i)
   }
 }
 const verifyCode = async () => {
