@@ -10,6 +10,7 @@
         ref="inputRefs"
         @input="(event) => handleInput(event, index)"
         @keyup="(event) => handleKeyup(event, index)"
+        @paste.prevent="(event) => handlePaste(event, index)"
       />
       <button class="submit" @click="verifyCode" :disabled="loading">提交</button>
     </div>
@@ -33,6 +34,7 @@ onMounted(() => {
   const firstInput = inputRefs.value[0]
   firstInput.focus()
 })
+
 const handleInput = (event, index) => {
   const value = event.target.value
   const newValue = value.replace(/\D/g, '')
@@ -56,7 +58,20 @@ const handleKeyup = async (event, index) => {
     inputRefs.value[lastIndex].focus()
   }
 }
-
+const handlePaste = async (event, index) => {
+  let pasteData = event.clipboardData.getData('text')
+  if (!pasteData.match(/^\d+$/)) return
+  pasteData = pasteData.split('')
+  for (
+    let i = index, pasteIndex = 0;
+    i < pads.value.length && pasteIndex < pasteData.length;
+    i++, pasteIndex++
+  ) {
+    const curPaste = pasteData[pasteIndex]
+    pads.value[i] = curPaste
+    await handleKeyup({ key: String(curPaste) }, i)
+  }
+}
 const verifyCode = async () => {
   const code = pads.value.join('')
   if (code.length !== 4 || !/^\d+$/.test(code)) {
