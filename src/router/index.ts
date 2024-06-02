@@ -25,10 +25,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  if (to.meta.reuiresAuth && !!token) {
+  if (to.meta.requiresAuth) {
     if (token) {
       next()
     } else {
+      console.log('innn')
       next({ name: 'verify' })
     }
   }

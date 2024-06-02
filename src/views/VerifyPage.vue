@@ -11,8 +11,8 @@
         @input="(event) => handleInput(event, index)"
         @keyup="(event) => handleKeyup(event, index)"
       />
+      <button class="submit" @click="verifyCode" :disabled="loading">提交</button>
     </div>
-    <button @click="verifyCode" :disabled="loading">Verify</button>
     <p v-if="error">{{ error }}</p>
     <p v-if="loading">Loading...</p>
   </div>
@@ -80,11 +80,16 @@ const verifyCode = async () => {
 .verification-inputs {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .verification-inputs input {
   width: 40px;
   height: 40px;
   margin: 0 5px;
   text-align: center;
+}
+button.submit {
+  height: 40px;
+  margin-left: 20px;
 }
 </style>
