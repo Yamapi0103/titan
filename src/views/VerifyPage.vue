@@ -8,6 +8,7 @@
         :value="pad"
         maxlength="1"
         ref="inputRefs"
+        :autofocus="index === 0"
         @input="(event) => handleInput(event, index)"
         @keyup.backspace="handleKeyup(index)"
         @paste.prevent="(event) => handlePaste(event, index)"
@@ -20,7 +21,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProfileStore } from '@/stores/profile'
 const pads = ref(['', '', '', ''])
@@ -29,12 +30,6 @@ const error = ref('')
 const loading = ref(false)
 const router = useRouter()
 const profileStore = useProfileStore()
-
-onMounted(() => {
-  // bug: no focus on first input
-  const firstInput = inputRefs.value[0]
-  firstInput.focus()
-})
 
 const handleInput = (event, index) => {
   const value = event.target.value
