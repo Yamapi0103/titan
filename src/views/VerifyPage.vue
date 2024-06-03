@@ -40,9 +40,10 @@ const handleInput = (event, index) => {
   const value = event.target.value
   const newValue = value.replace(/\D/g, '')
 
-  // bug: input has no set to empty
-  pads.value[index] = ''
-  if (!newValue) return
+  if (!newValue) {
+    event.target.value = ''
+    return
+  }
   pads.value[index] = newValue
   jumpNext(index)
 }
