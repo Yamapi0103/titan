@@ -47,7 +47,7 @@ const handleInput = (event, index) => {
   jumpNext(index)
 }
 const handleKeyup = async (index) => {
-  if (index <= 0) return
+  if (index < 1) return
   const lastIndex = index - 1
   pads.value[lastIndex] = ''
   inputRefs.value[lastIndex].focus()
