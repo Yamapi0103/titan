@@ -8,7 +8,6 @@
         :value="pad"
         maxlength="1"
         ref="inputRefs"
-        :autofocus="index === 0"
         @input="(event) => handleInput(event, index)"
         @keyup.backspace="handleKeyup(index)"
         @paste.prevent="(event) => handlePaste(event, index)"
@@ -21,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProfileStore } from '@/stores/profile'
 const pads = ref(['', '', '', ''])
@@ -30,6 +29,10 @@ const error = ref('')
 const loading = ref(false)
 const router = useRouter()
 const profileStore = useProfileStore()
+
+onMounted(() => {
+  inputRefs.value[0].focus()
+})
 
 const handleInput = (event, index) => {
   const value = event.target.value
@@ -58,7 +61,7 @@ const jumpNext = async (index) => {
   }
 }
 
-const handlePaste = async (event, index) => {
+const handlePaste = (event, index) => {
   let pasteData = event.clipboardData.getData('text')
   if (!pasteData.match(/^\d+$/)) return
   pasteData = pasteData.split('')
@@ -69,7 +72,7 @@ const handlePaste = async (event, index) => {
   ) {
     const curPaste = pasteData[pasteIndex]
     pads.value[i] = curPaste
-    await jumpNext(i)
+    jumpNext(i)
   }
 }
 const verifyCode = async () => {
