@@ -23,17 +23,11 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const token = localStorage.getItem('token')
-  if (to.meta.requiresAuth) {
-    if (token) {
-      next()
-    } else {
-      console.log('innn')
-      next({ name: 'verify' })
-    }
-  } else {
-    next()
+  if (to.meta.requiresAuth && !token) {
+    return { name: 'verify' }
   }
+  return true
 })
 export default router
